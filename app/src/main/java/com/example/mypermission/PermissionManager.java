@@ -3,6 +3,8 @@ package com.example.mypermission;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +35,21 @@ public class PermissionManager {
         return PermissionManagerHolder.INSTANCE;
     }
 
+    public boolean hasPermission(Context context, String[] permissions) {
+        if (PermissionUtils.isPermissionSupported()) {
+            for (String permission : permissions) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (context.checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } else {
+            return true;
+        }
+    }
+
     public void requestPermissions(Context context, String[] permissions, PermissionsListener listener) {
         if (listener == null || permissions == null || permissions.length == 0) {
             return;
@@ -44,6 +61,10 @@ public class PermissionManager {
 
         if (context == null) {
             listener.onPermissionResult(null);
+            return;
+        }
+
+        if (PermissionUtils.hasPermission(context, permissions, listener)) {
             return;
         }
 
