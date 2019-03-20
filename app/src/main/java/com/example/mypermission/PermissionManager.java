@@ -21,7 +21,16 @@ public class PermissionManager {
 
     public void onRequestPermissionsResult(int[] result) {
         if (mPermissionsListener != null && mPermissionsListener.get() != null) {
-            mPermissionsListener.get().onPermissionResult(result);
+            boolean grantedAll = true;
+            if (result != null) {
+                for (int i = 0; i < result.length; i++) {
+                    if (result[i] != PackageManager.PERMISSION_GRANTED) {
+                        grantedAll = false;
+                        break;
+                    }
+                }
+            }
+            mPermissionsListener.get().onPermissionResult(grantedAll, result);
             mPermissionsListener.clear();
             mPermissionsListener = null;
         }
@@ -35,7 +44,7 @@ public class PermissionManager {
         return PermissionManagerHolder.INSTANCE;
     }
 
-    public boolean hsPermission(Context context, String permission) {
+    public boolean hasPermission(Context context, String permission) {
         return hasPermission(context, new String[] { permission });
     }
 
@@ -68,7 +77,7 @@ public class PermissionManager {
         }
 
         if (context == null) {
-            listener.onPermissionResult(null);
+            listener.onPermissionResult(false,null);
             return;
         }
 

@@ -35,7 +35,7 @@ class PermissionUtils {
             result[i] = PackageManager.PERMISSION_GRANTED;
         }
         if (listener != null) {
-            listener.onPermissionResult(result);
+            listener.onPermissionResult(true, result);
         }
     }
 
