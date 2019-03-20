@@ -35,6 +35,10 @@ public class PermissionManager {
         return PermissionManagerHolder.INSTANCE;
     }
 
+    public boolean hsPermission(Context context, String permission) {
+        return hasPermission(context, new String[] { permission });
+    }
+
     public boolean hasPermission(Context context, String[] permissions) {
         if (PermissionUtils.isPermissionSupported()) {
             for (String permission : permissions) {
@@ -48,6 +52,10 @@ public class PermissionManager {
         } else {
             return true;
         }
+    }
+
+    public void requestPermission(Context context, String permission, PermissionsListener listener) {
+        requestPermissions(context, new String[] { permission }, listener);
     }
 
     public void requestPermissions(Context context, String[] permissions, PermissionsListener listener) {
